@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realistic Blinking Eyes with Eyelashes</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #2a2a2a;
+        overflow: hidden;
+      }
+
+      .eyes-container {
+        display: flex;
+        justify-content: space-between;
+        width: 300px; /* Adjusted width for two eyes */
+      }
+
+      .eye {
+        width: 100px;
+        height: 100px;
+        background-color: white;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: 2px solid #ccc;
+        overflow: hidden;
+        cursor: pointer; /* Indicate that the eye is clickable */
+      }
+
+      .iris {
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(
+          circle,
+          #0077be 40%,
+          #004d73 60%,
+          black 100%
+        );
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.1s;
+      }
+
+      .pupil {
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        border-radius: 50%;
+        position: absolute;
+        transition: transform 0.1s;
+      }
+
+      .reflection {
+        width: 7px;
+        height: 7px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        position: absolute;
+        top: 20%;
+        left: 25%;
+        box-shadow: 0 2px 5px rgba(255, 255, 255, 0.7);
+      }
+
+      /* Eyelid for blinking */
+      .eyelid {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #e0e0e0;
+        top: -100%; /* Initially above the eye */
+        left: 0;
+        border-radius: 50%;
+        transition: top 0.3s ease-in-out; /* Simplified transition */
+        z-index: 2;
+      }
+
+      .blink {
+        top: 0; /* Close the eyelid */
+      }
+
+      /* Red tint on the eye */
+      .red-tint {
+        background-color: rgba(220, 90, 90, 0.3); /* Red tint */
+        transition: background-color 3s ease-in-out; /* Smooth transition for the red tint */
+      }
+
+      /* Eyelashes */
+      .eyelashes {
+        position: absolute;
+        top: -10px; /* Above the eye */
+        display: flex;
+        justify-content: space-between;
+        width: 120%; /* Lashes extend slightly beyond eye width */
+        height: 10px;
+        pointer-events: none;
+      }
+
+      .lash {
+        width: 2px;
+        height: 10px;
+        background-color: black;
+        border-radius: 1px;
+        transform: rotate(45deg);
+      }
+
+      .lash:nth-child(2) {
+        transform: rotate(30deg);
+      }
+      .lash:nth-child(3) {
+        transform: rotate(15deg);
+      }
+      .lash:nth-child(4) {
+        transform: rotate(0deg);
+      }
+      .lash:nth-child(5) {
+        transform: rotate(-15deg);
+      }
+      .lash:nth-child(6) {
+        transform: rotate(-30deg);
+      }
+      .lash:nth-child(7) {
+        transform: rotate(-45deg);
+      }
+      .eye {
+        width: 100px;
+        height: 100px;
+        background-color: white;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: 2px solid #ccc;
+        overflow: hidden;
+        cursor: pointer;
+        transition: background-color 3s ease-in-out; /* Add transition to the background-color */
+      }
+
+      /* Red tint on the eye */
+      .red-tint {
+        background-color: rgb(255, 140, 140); /* Red tint */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="eyes-container">
+      <!-- Left Eye -->
+      <div class="eye">
+        <div class="eyelid"></div>
+        <div class="eyelashes">
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+        </div>
+        <div class="iris">
+          <div class="pupil"></div>
+          <div class="reflection"></div>
+        </div>
+      </div>
+
+      <!-- Right Eye -->
+      <div class="eye">
+        <div class="eyelid"></div>
+        <div class="eyelashes">
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+          <div class="lash"></div>
+        </div>
+        <div class="iris">
+          <div class="pupil"></div>
+          <div class="reflection"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const eyes = document.querySelectorAll(".eye");
+
+      // Function to move the irises and pupils together
+      function moveEyes(e) {
+        eyes.forEach((eye) => {
+          const iris = eye.querySelector(".iris");
+          const pupil = eye.querySelector(".pupil");
+
+          const eyeRadius = 50;
+          const irisRadius = 25;
+          const pupilRadius = 10;
+
+          const eyeRect = eye.getBoundingClientRect();
+          const eyeCenterX = eyeRect.left + eyeRadius;
+          const eyeCenterY = eyeRect.top + eyeRadius;
+
+          const angle = Math.atan2(
+            e.clientY - eyeCenterY,
+            e.clientX - eyeCenterX
+          );
+
+          const maxIrisDistance = eyeRadius - irisRadius;
+          const irisX = Math.cos(angle) * maxIrisDistance;
+          const irisY = Math.sin(angle) * maxIrisDistance;
+
+          iris.style.transform = `translate(${irisX}px, ${irisY}px)`;
+
+          const maxPupilDistance = irisRadius - pupilRadius;
+          const pupilX = Math.cos(angle) * (maxPupilDistance * 0.5);
+          const pupilY = Math.sin(angle) * (maxPupilDistance * 0.5);
+
+          pupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+        });
+      }
+
+      // Function to blink both eyes together
+      function blinkEyes() {
+        eyes.forEach((eye) => {
+          const eyelid = eye.querySelector(".eyelid");
+          eyelid.classList.add("blink"); // Close the eyelid
+
+          // Close the eyes for 200ms
+          setTimeout(() => {
+            eyelid.classList.remove("blink"); // Open the eyelid
+          }, 300); // Blink duration
+        });
+
+        // Set a random time for the next blink
+        setTimeout(blinkEyes, Math.random() * (5000 - 2000) + 2000); // Random time between 2 to 5 seconds
+      }
+
+      // Function to blink a single eye and change its color on click
+      function blinkEye(eye) {
+        const eyelid = eye.querySelector(".eyelid");
+        eyelid.classList.add("blink"); // Close the eyelid
+
+        // Close the eye for 2 seconds
+        setTimeout(() => {
+          eyelid.classList.remove("blink"); // Open the eyelid
+          eye.classList.add("red-tint"); // Immediately add red tint after opening
+
+          // Keep the eye red for 3 seconds and then transition back to white smoothly
+          setTimeout(() => {
+            eye.classList.remove("red-tint"); // Remove red tint smoothly
+          }, 3000); // Duration of red tint
+        }, 2000); // Eye closed duration
+      }
+
+      // Event listener for mouse movement
+      document.addEventListener("mousemove", moveEyes);
+
+      // Add click event listeners to each eye
+      eyes.forEach((eye) => {
+        eye.addEventListener("click", () => {
+          blinkEye(eye); // Blink the clicked eye only
+        });
+      });
+
+      // Start random blinking
+      blinkEyes();
+    </script>
+  </body>
+</html>
